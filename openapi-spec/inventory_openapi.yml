@@ -1,0 +1,137 @@
+openapi: 3.0.1
+info:
+  title: Demo Inventory Service - API Tutorial
+  description: |-
+    This is a demo Inventory Service API
+  version: 1.0.0
+servers:
+  - url: https://16d7x3ric9.execute-api.us-east-1.amazonaws.com/dev
+    description: API Base URL
+tags:
+  - name: inventory
+    description: Operations related to inventory management
+paths:
+  /inventory:
+    get:
+      tags:
+        - inventory
+      summary: Retrieve inventory item by productId
+      parameters:
+        - name: productId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The ID of the product to retrieve.
+      responses:
+        "200":
+          description: Successfully retrieved product information.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryItem"
+        "400":
+          description: Bad request (e.g., missing or invalid productId)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /inventory/reserve:
+    post:
+      tags:
+        - inventory
+      summary: Reserve inventory for a product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReserveRequest"
+      responses:
+        "200":
+          description: Successfully reserved product inventory.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReserveResponse"
+        "400":
+          description: Bad request (e.g., insufficient stock)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /inventory/restock:
+    post:
+      tags:
+        - inventory
+      summary: Restock inventory to a default quantity
+      responses:
+        "200":
+          description: Successfully restocked inventory.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RestockResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    InventoryItem:
+      type: object
+      properties:
+        productId:
+          type: string
+          example: "tshirt001"
+        location:
+          type: string
+          example: "Warehouse A"
+        quantity:
+          type: integer
+          example: 100
+        description:
+          type: string
+          example: "T-shirt A"
+    ReserveRequest:
+      type: object
+      properties:
+        productId:
+          type: string
+          example: "tshirt001"
+        quantity:
+          type: integer
+          example: 1
+    ReserveResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+    RestockResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Error message describing the issue"

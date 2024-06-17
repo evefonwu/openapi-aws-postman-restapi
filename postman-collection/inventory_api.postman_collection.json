@@ -1,0 +1,206 @@
+{
+  "info": {
+    "_postman_id": "e01e4e53-c5e9-48ef-b5a4-84d4cf9be20d",
+    "name": "Postman Collection Tests v1 - demo Inventory Service - API Tutorial",
+    "description": "Postman Collection for the demo Inventory Service API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "36305671"
+  },
+  "item": [
+    {
+      "name": "Retrieve Inventory",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response contains productId\", function () {",
+              "    pm.expect(pm.response.json()).to.have.property('productId');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/inventory?productId=tshirt001",
+          "host": ["{{base_url}}"],
+          "path": ["inventory"],
+          "query": [
+            {
+              "key": "productId",
+              "value": "tshirt001"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Retrieve Inventory - Product Not Found",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test(\"Response contains 'not found'\", function () {",
+              "    pm.expect(pm.response.text()).to.include('not found');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/inventory?productId=notfound",
+          "host": ["{{base_url}}"],
+          "path": ["inventory"],
+          "query": [
+            {
+              "key": "productId",
+              "value": "notfound"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reserve Inventory",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response contains success\", function () {",
+              "    pm.expect(pm.response.json()).to.have.property('success', true);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"productId\": \"tshirt001\", \"quantity\": 10}"
+        },
+        "url": {
+          "raw": "{{base_url}}/inventory/reserve",
+          "host": ["{{base_url}}"],
+          "path": ["inventory", "reserve"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reserve Inventory - Insufficient Stock",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test(\"Response contains 'insufficient stock'\", function () {",
+              "    pm.expect(pm.response.text()).to.include('Insufficient stock');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"productId\": \"tshirt001\", \"quantity\": 101}"
+        },
+        "url": {
+          "raw": "{{base_url}}/inventory/reserve",
+          "host": ["{{base_url}}"],
+          "path": ["inventory", "reserve"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Restock Inventory",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response contains success\", function () {",
+              "    pm.expect(pm.response.json()).to.have.property('success', true);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{base_url}}/inventory/restock",
+          "host": ["{{base_url}}"],
+          "path": ["inventory", "restock"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://0r5qq5g6wa.execute-api.us-east-1.amazonaws.com/dev"
+    }
+  ]
+}
